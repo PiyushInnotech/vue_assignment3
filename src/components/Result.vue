@@ -1,11 +1,14 @@
 <template>
   <div class="result">
     <template v-if="!isStart">
-    <h2 class="score" v-if="score>0">Your score is {{ score }}</h2>
-    <h2 class="score" v-if="score==0">Start the game</h2>
+      <div class="score" v-if="earlyTime">
+        <h2 v-if="score > 0">Your score is {{ score }}</h2>
+        <h2 v-else>Too Early</h2>
+      </div>
+      <h2 class="score" v-else>Start the Game</h2>
     </template>
-    <template v-if="isStart">
-    <h2 class="score" >Stop when the color changes</h2>
+    <template v-else-if="isStart">
+      <h2 class="score">Stop when the color changes</h2>
     </template>
     <div class="highScore">
       <h3>Your high score is:</h3>
@@ -16,7 +19,7 @@
 
 <script>
 export default {
-  name: "Result",
+  name: "result",
   data() {
     return {
       score: 0,
@@ -24,7 +27,7 @@ export default {
     };
   },
   methods: {},
-  props: ["score", "highScore",'isStart'],
+  props: ["score", "highScore", "isStart", "earlyTime"],
 };
 </script>
 

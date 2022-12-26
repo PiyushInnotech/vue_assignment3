@@ -1,68 +1,85 @@
 <template>
   <!--Start Stop-->
-  <div :class="isClass ? 'boxStop' : 'boxStart'">
-    <Go
+  <div
+    :class="{
+      boxStop: gameStart,
+      boxStart: gameStop,
+    }"
+  >
+    <go
       class="goBtn"
-      @close="timer"
+      @close="startGame"
       :delay="delay"
       :isStart="isStart"
-      :isClass="isClass"
-      @open="stopTimer"
+      :gameStart="gameStart"
+      :gameStop="gameStop"
+      @open="stopGame"
     >
-    </Go>
-    <Result
+    </go>
+    <result
       class="resultView"
       :score="score"
       :highScore="highScore"
-      :reactionTime="reactionTime"
       :isStart="isStart"
-    ></Result>
+      :earlyTime="earlyTime"
+    ></result>
   </div>
 </template>
 
 <script>
-import Go from "./components/Go.vue";
-import Result from "./components/Result.vue";
+import go from "./components/Go.vue";
+import result from "./components/Result.vue";
 export default {
   name: "App",
   data() {
     return {
-      isClass: false,
+      gameStop: true,
+      gameStart: false,
       delay: 5000,
       time: null,
       reactionTime: 0,
       score: 0,
       isStart: false,
-      highScore: '0',
+      highScore: "0",
+      class: null,
+      earlyTime: false,
     };
   },
   components: {
-    Go,
-    Result,
+    go,
+    result,
   },
   methods: {
-    timer() {
-      setTimeout(() => {
+    startGame() {
+      this.class = setTimeout(() => {
         this.startTimer();
-        this.isClass = true;
+        this.gameStart = true;
+        this.gameStop = false;
+        this.early = true;
       }, this.delay);
       this.isStart = !this.isStart;
+      this.reactionTime = 0;
     },
     startTimer() {
       this.time = setInterval(() => {
         this.reactionTime += 10;
       }, 10);
     },
-    stopTimer() {
-      clearInterval(this.time, this.timer);
-      this.isClass = !this.isClass;
+    stopGame() {
+      clearTimeout(this.class);
+      clearInterval(this.time);
+      this.gameStart = false;
+      this.gameStop = true;
       this.score = this.reactionTime / 1000;
       this.isStart = !this.isStart;
       if (this.highScore == 0) {
-        this.highScore = this.score
+        this.highScore = this.score;
       }
-      if(this.highScore>this.score){
-        this.highScore = this.score
+      if (this.highScore > this.score && this.Score > 0) {
+        this.highScore = this.score;
+      }
+      if (this.reactionTime == 0) {
+        this.earlyTime = true;
       }
     },
   },

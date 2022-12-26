@@ -13,12 +13,12 @@
 
 <script>
 export default {
-  name: "Go",
+  name: "go",
   data() {
     return {};
   },
   emits: ["close", "open"],
-  props: ["delay", "isStart","isClass"],
+  props: ["delay", "isStart", "gameStart", "gameStop"],
 };
 </script>
 
