@@ -1,47 +1,113 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <!--Start Stop-->
+  <div
+    :class="{
+      boxStop: gameStart,
+      boxStart: gameStop,
+    }"
+  >
+    <go
+      class="goBtn"
+      @close="startGame"
+      :delay="delay"
+      :isStart="isStart"
+      :gameStart="gameStart"
+      :gameStop="gameStop"
+      @open="stopGame"
+    >
+    </go>
+    <result
+      class="resultView"
+      :score="score"
+      :highScore="highScore"
+      :isStart="isStart"
+      :earlyTime="earlyTime"
+    ></result>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<script>
+import go from "./components/Go.vue";
+import result from "./components/Result.vue";
+export default {
+  name: "App",
+  data() {
+    return {
+      gameStop: true,
+      gameStart: false,
+      delay: 5000,
+      time: null,
+      reactionTime: 0,
+      score: 0,
+      isStart: false,
+      highScore: "0",
+      class: null,
+      earlyTime: false,
+    };
+  },
+  components: {
+    go,
+    result,
+  },
+  methods: {
+    startGame() {
+      this.class = setTimeout(() => {
+        this.startTimer();
+        this.gameStart = true;
+        this.gameStop = false;
+        this.early = true;
+      }, this.delay);
+      this.isStart = !this.isStart;
+      this.reactionTime = 0;
+    },
+    startTimer() {
+      this.time = setInterval(() => {
+        this.reactionTime += 10;
+      }, 10);
+    },
+    stopGame() {
+      clearTimeout(this.class);
+      clearInterval(this.time);
+      this.gameStart = false;
+      this.gameStop = true;
+      this.score = this.reactionTime / 1000;
+      this.isStart = !this.isStart;
+      if (this.highScore == 0) {
+        this.highScore = this.score;
+      }
+      if (this.highScore > this.score && this.Score > 0) {
+        this.highScore = this.score;
+      }
+      if (this.reactionTime == 0) {
+        this.earlyTime = true;
+      }
+    },
+  },
+};
+</script>
+
+
+<style >
+.boxStart {
+  width: 100%;
+  height: 100vh;
+  background-color: #42adf5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.boxStop {
+  width: 100%;
+  height: 100vh;
+  background-color: green;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.goBtn {
+  margin-top: 10%;
+}
+.resultView {
+  margin-top: 20px;
 }
 </style>
